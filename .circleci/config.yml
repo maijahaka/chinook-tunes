@@ -11,6 +11,7 @@ jobs:
       - run: curl https://cli-assets.heroku.com/install.sh | sh
       - run: |
           echo "$HEROKU_API_KEY" | docker login --username $HEROKU_LOGIN --password-stdin registry.heroku.com
+      - run: docker cp . /
       - run: docker build -t $HEROKU_APP .
       - run: heroku container:login
       - run: heroku container:push web
