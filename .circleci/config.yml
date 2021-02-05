@@ -7,7 +7,7 @@ jobs:
     steps:
       - setup_remote_docker:
           version: 19.03.13
-      - run: apk update && apk upgrade && apk add --no-cache bash curl
+      - run: apk update && apk upgrade && apk add --no-cache bash curl docker-cli
       - run: curl https://cli-assets.heroku.com/install.sh | sh
       - run: |
           echo "$HEROKU_API_KEY" | docker login --username $HEROKU_LOGIN --password-stdin registry.heroku.com
