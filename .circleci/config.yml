@@ -1,0 +1,20 @@
+version: 2.1
+
+jobs:
+  build-and-deploy:
+    docker:
+      - image: alpine
+    steps:
+      - setup_remote_docker:
+          version: 19.03.13
+      - run: curl https://cli-assets.heroku.com/install.sh | sh
+      - run: |
+          echo "$HEROKU_API_KEY" | docker login --username $HEROKU_LOGIN --password-stdin registry.heroku.com
+      - run: docker build -t $HEROKU_APP .
+      - run: heroku container:login
+      - run: heroku container:push web
+      - run: heroku container:release web
+workflows:
+  build-and-deploy:
+    jobs:
+      - build-and-deploy
