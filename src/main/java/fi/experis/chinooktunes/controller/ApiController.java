@@ -1,6 +1,7 @@
 package fi.experis.chinooktunes.controller;
 
 import fi.experis.chinooktunes.model.Customer;
+import fi.experis.chinooktunes.model.CustomerWithSpendingInformation;
 import fi.experis.chinooktunes.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 @RestController
@@ -29,6 +29,12 @@ public class ApiController {
     @GetMapping("/api/customers/countries")
     public LinkedHashMap<String, Integer> getNumberOfCustomersInEachCountry() {
         return customerRepository.getNumberOfCustomersPerCountry();
+    }
+
+    // get all customers ordered by their total spending (descending)
+    @GetMapping("/api/customers/highest-spenders")
+    public ArrayList<CustomerWithSpendingInformation> getHighestSpenders() {
+        return customerRepository.getHighestSpendingCustomers();
     }
 
     @PostMapping("/api/customers")

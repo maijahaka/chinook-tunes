@@ -2,6 +2,7 @@ package fi.experis.chinooktunes.repository;
 
 import fi.experis.chinooktunes.logger.CustomLogger;
 import fi.experis.chinooktunes.model.Customer;
+import fi.experis.chinooktunes.model.CustomerWithSpendingInformation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -131,6 +132,50 @@ public class CustomerRepository {
             }
         }
         return customersPerCountry;
+    }
+
+    // returns all customers in the database ordered by their total spending (descending)
+    public ArrayList<CustomerWithSpendingInformation> getHighestSpendingCustomers() {
+        ArrayList<CustomerWithSpendingInformation> highestSpendingCustomers = new ArrayList<>();
+
+        try {
+            conn = DriverManager.getConnection(URL);
+            logger.log("Connection to SQLite has been established.");
+
+            PreparedStatement preparedStatement = conn.prepareStatement(
+                    "SELECT customers.CustomerId, FirstName, LastName, Country, PostalCode, " +
+                            "Phone, Email, SUM(Total) AS TotalSpending " +
+                            "FROM customers LEFT JOIN invoices " +
+                            "ON customers.CustomerId = invoices.CustomerId " +
+                            "GROUP BY customers.CustomerId ORDER BY TotalSpending DESC");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                highestSpendingCustomers.add(
+                        new CustomerWithSpendingInformation(
+                                resultSet.getInt("CustomerId"),
+                                resultSet.getString("FirstName"),
+                                resultSet.getString("LastName"),
+                                resultSet.getString("Country"),
+                                resultSet.getString("PostalCode"),
+                                resultSet.getString("Phone"),
+                                resultSet.getString("Email"),
+                                resultSet.getDouble("TotalSpending")
+                        ));
+            }
+
+            logger.log("All customers were retrieved successfully.");
+        } catch (SQLException e) {
+            logger.log(e.getMessage());
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                logger.log(e.getMessage());
+            }
+        }
+
+        return highestSpendingCustomers;
     }
 
     public Customer addCustomer(Customer customer) {
