@@ -5,10 +5,7 @@ import fi.experis.chinooktunes.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -30,12 +27,33 @@ public class ApiController {
     @PostMapping("/api/customers")
     public ResponseEntity addNewCustomer(@RequestBody Customer customer) {
         // returns null if customer was not added successfully
-        Customer addedCustomer = customerRepository.addNewCustomer(customer);
+        Customer addedCustomer = customerRepository.addCustomer(customer);
 
         if (addedCustomer == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    "Customer was not added successfully.");
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(addedCustomer);
+    }
+
+    @PutMapping("/api/customers/{id}")
+    public ResponseEntity updateExistingCustomer(@PathVariable String id,
+                                                 @RequestBody Customer customer) {
+        // check if customer ids in the path and request body match
+        if (!String.valueOf(customer.getCustomerId()).equals(id)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    "Customer was not updated successfully.");
+        }
+
+        // returns null if customer was not updated successfully
+        Customer updatedCustomer = customerRepository.updateCustomer(customer);
+
+        if (updatedCustomer == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    "Customer was not updated successfully.");
+        }
+
+        return ResponseEntity.ok(updatedCustomer);
     }
 }

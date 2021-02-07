@@ -31,7 +31,7 @@ public class CustomerRepository {
 
             PreparedStatement preparedStatement = conn.prepareStatement(
                     "SELECT CustomerId, FirstName, LastName, Country, PostalCode, Phone, Email " +
-                            "FROM Customers");
+                            "FROM customers");
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
@@ -69,7 +69,7 @@ public class CustomerRepository {
 
             PreparedStatement preparedStatement = conn.prepareStatement(
                     "SELECT FirstName, LastName, Country, PostalCode, Phone, Email " +
-                            "FROM Customers WHERE CustomerId = ?");
+                            "FROM customers WHERE CustomerId = ?");
             preparedStatement.setLong(1, customerId);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -101,11 +101,11 @@ public class CustomerRepository {
         return customer;
     }
 
-    public Customer addNewCustomer(Customer customer) {
-        // initialize the id of the customer to be added as -1
+    public Customer addCustomer(Customer customer) {
+        // initialize the id of the customer added to the database as -1
         long addedCustomerId = -1;
 
-        // initialize the customer to be added as null
+        // initialize the customer added to the database as null
         Customer addedCustomer = null;
 
         try {
@@ -113,7 +113,7 @@ public class CustomerRepository {
             logger.log("Connection to SQLite has been established.");
 
             PreparedStatement preparedStatement = conn.prepareStatement(
-                    "INSERT INTO Customers(FirstName, LastName, Country, PostalCode, Phone, Email)" +
+                    "INSERT INTO customers(FirstName, LastName, Country, PostalCode, Phone, Email)" +
                             "VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, customer.getFirstName());
             preparedStatement.setString(2, customer.getLastName());
@@ -156,5 +156,57 @@ public class CustomerRepository {
 
         // returns null if customer creation was unsuccessful
         return addedCustomer;
+    }
+
+    public Customer updateCustomer(Customer customer) {
+        // variable for indicating the success status of the update operation
+        boolean success = false;
+
+        // initialize the successfully updated customer to null
+        Customer updatedCustomer = null;
+
+        try {
+            conn = DriverManager.getConnection(URL);
+            logger.log("Connection to SQLite has been established.");
+
+            PreparedStatement preparedStatement = conn.prepareStatement(
+                    "UPDATE customers SET FirstName = ?, LastName = ?, Country = ?," +
+                            "PostalCode = ?, Phone = ?, Email = ? WHERE CustomerId = ?");
+            preparedStatement.setString(1, customer.getFirstName());
+            preparedStatement.setString(2, customer.getLastName());
+            preparedStatement.setString(3, customer.getCountry());
+            preparedStatement.setString(4, customer.getPostalCode());
+            preparedStatement.setString(5, customer.getPhone());
+            preparedStatement.setString(6, customer.getEmail());
+            preparedStatement.setLong(7, customer.getCustomerId());
+
+            int modifiedRows = preparedStatement.executeUpdate();
+
+            // check if the update was executed successfully in the database
+            success = (modifiedRows != 0);
+
+            if (!success) {
+                throw new SQLException("ERROR: Updating customer failed.");
+            }
+
+            logger.log("Customer " + customer.getFirstName() + " " + customer.getLastName() +
+                    " was updated successfully.");
+        } catch (SQLException e) {
+            logger.log(e.getMessage());
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                logger.log(e.getMessage());
+            }
+        }
+
+        // returns the updated customer, if the update was successful
+        if (success) {
+            updatedCustomer = getCustomerWithId(customer.getCustomerId());
+        }
+
+        // returns null if customer update was unsuccessful
+        return updatedCustomer;
     }
 }
