@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 @Repository
 public class CustomerRepository {
@@ -99,6 +100,37 @@ public class CustomerRepository {
         }
         // returns null if no customer was found with the given id
         return customer;
+    }
+
+    public LinkedHashMap<String, Integer> getNumberOfCustomersPerCountry() {
+        LinkedHashMap<String, Integer> customersPerCountry = new LinkedHashMap<>();
+
+        try {
+            conn = DriverManager.getConnection(URL);
+            logger.log("Connection to SQLite has been established.");
+
+            // get number of customers in each country in descending order
+            PreparedStatement preparedStatement = conn.prepareStatement(
+                    "SELECT Country, COUNT(*) AS NoOfCustomers FROM customers " +
+                            "GROUP BY Country ORDER BY NoOfCustomers DESC, Country");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                customersPerCountry.put(resultSet.getString("Country"),
+                        resultSet.getInt("NoOfCustomers"));
+            }
+
+            logger.log("The requested information was retrieved successfully.");
+        } catch (SQLException e) {
+            logger.log(e.getMessage());
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                logger.log(e.getMessage());
+            }
+        }
+        return customersPerCountry;
     }
 
     public Customer addCustomer(Customer customer) {

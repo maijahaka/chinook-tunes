@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 @RestController
 public class ApiController {
@@ -22,6 +24,11 @@ public class ApiController {
     @GetMapping("/api/customers")
     public ArrayList<Customer> getAllCustomers() {
         return customerRepository.getAllCustomers();
+    }
+
+    @GetMapping("/api/customers/countries")
+    public LinkedHashMap<String, Integer> getNumberOfCustomersInEachCountry() {
+        return customerRepository.getNumberOfCustomersPerCountry();
     }
 
     @PostMapping("/api/customers")
