@@ -1,0 +1,162 @@
+{
+	"info": {
+		"_postman_id": "fec82471-db86-4f88-9524-a56b13590fc7",
+		"name": "Chinook Tunes Development",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all customers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/customers",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add new customer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"first_name\": \"Jane\",\r\n    \"last_name\": \"Doe\",\r\n    \"country\": \"United Kingdom\",\r\n    \"postal_code\": \"CV31 3NY\",\r\n    \"phone\": \"07111222\",\r\n    \"email\": \"jane.doe@test.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/customers",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update existing customer",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1,\r\n    \"first_name\": \"Luís\",\r\n    \"last_name\": \"Gonçalves\",\r\n    \"country\": \"Brazil\",\r\n    \"postal_code\": \"12227-000\",\r\n    \"phone\": \"+55 (12) 3923-1234\",\r\n    \"email\": \"luis.g@anothercompany.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/customers/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customers",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get number of customers in each country",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/customers/countries",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customers",
+						"countries"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get highest spending customers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/customers/top/spenders",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customers",
+						"top",
+						"spenders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get most popular genre of a customer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/customers/56/popular/genre",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"customers",
+						"56",
+						"popular",
+						"genre"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:8080/api"
+		}
+	]
+}
