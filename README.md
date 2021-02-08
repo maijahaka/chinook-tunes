@@ -2,6 +2,12 @@
 
 App on Heroku: https://chinook-tunes.herokuapp.com/
 
+## Pages
+
+### Home page
+
+The home page contains lists of randomly picked artists, songs and genres from the database.
+
 ## API endpoints
 
 ### Get all customers
