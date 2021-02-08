@@ -330,4 +330,34 @@ public class CustomerRepository {
         // returns null if customer update was unsuccessful
         return updatedCustomer;
     }
+
+    public boolean customerExists(long customerId) {
+        boolean customerFound = false;
+
+        try {
+            conn = DriverManager.getConnection(URL);
+            logger.log("Connection to SQLite has been established.");
+
+            PreparedStatement preparedStatement = conn.prepareStatement(
+                    "SELECT CustomerId FROM customers WHERE CustomerId = ? LIMIT 1");
+
+            preparedStatement.setLong(1, customerId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                customerFound = true;
+            }
+        } catch (SQLException e) {
+            logger.log(e.getMessage());
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                logger.log(e.getMessage());
+            }
+        }
+
+        return customerFound;
+    }
 }

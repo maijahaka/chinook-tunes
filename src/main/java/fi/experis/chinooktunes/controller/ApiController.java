@@ -3,6 +3,7 @@ package fi.experis.chinooktunes.controller;
 import fi.experis.chinooktunes.model.Customer;
 import fi.experis.chinooktunes.model.CustomerWithSpendingInformation;
 import fi.experis.chinooktunes.repository.CustomerRepository;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +40,14 @@ public class ApiController {
 
     // get the most popular genre or a customer (or genres if several are equally popular)
     @GetMapping("/api/customers/{customerId}/popular/genre")
-    public ArrayList<String> getMostPopularGenresOfACustomer(@PathVariable long customerId) {
-        return customerRepository.getMostPopularGenresOfACustomer(customerId);
+    public ResponseEntity getMostPopularGenresOfACustomer(@PathVariable long customerId) {
+        if (!customerRepository.customerExists(customerId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid customer id.");
+        }
+
+        ArrayList<String> mostPopularGenres = customerRepository.getMostPopularGenresOfACustomer(customerId);
+
+        return ResponseEntity.ok(mostPopularGenres);
     }
 
     @PostMapping("/api/customers")
