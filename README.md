@@ -24,6 +24,8 @@ Returns all customers in the database with information about their total spendin
 
 ### Get the most popular genre of a customer
 
-https://chinook-tunes.herokuapp.com/api/customers/{customerId}/popular/genre
+https<nolink>://chinook-tunes.herokuapp.com/api/customers/{customerId}/popular/genre
 
 Returns the most popular genre of the customer with id {customerId}. If multiple genres are equally popular, all of them are returned.
+
+For example: https://chinook-tunes.herokuapp.com/api/customers/1/popular/genre
