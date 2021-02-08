@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head(title='Home')">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div th:replace="fragments/layout :: header">
+        Header
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <div class="card shadow-sm p-3 mb-5 bg-white rounded">
+                    <h5 class="card-header border-info border-3 bg-white">
+                        Randomly Picked Artists
+                    </h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:each="artist:${artists}">
+                            <span th:text="${artist.name}">artist</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card shadow-sm p-3 mb-5 bg-white rounded">
+                    <h5 class="card-header border-info border-3 bg-white">
+                        Randomly Picked Songs
+                    </h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:each="song:${songs}">
+                            <span th:text="${song.name}">song</span>
+                            <small>by <span th:text="${song.artist}">artist</span></small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card shadow-sm p-3 mb-5 bg-white rounded">
+                    <h5 class="card-header border-info border-3 bg-white">
+                        Randomly Picked Genres
+                    </h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:each="genre:${genres}">
+                            <span th:text="${genre.name}">genre</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
