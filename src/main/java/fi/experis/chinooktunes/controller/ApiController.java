@@ -32,9 +32,15 @@ public class ApiController {
     }
 
     // get all customers ordered by their total spending (descending)
-    @GetMapping("/api/customers/highest-spenders")
+    @GetMapping("/api/customers/top/spenders")
     public ArrayList<CustomerWithSpendingInformation> getHighestSpenders() {
         return customerRepository.getHighestSpendingCustomers();
+    }
+
+    // get the most popular genre or a customer (or genres if several are equally popular)
+    @GetMapping("/api/customers/{customerId}/popular/genre")
+    public ArrayList<String> getMostPopularGenresOfACustomer(@PathVariable long customerId) {
+        return customerRepository.getMostPopularGenresOfACustomer(customerId);
     }
 
     @PostMapping("/api/customers")
@@ -51,10 +57,10 @@ public class ApiController {
     }
 
     @PutMapping("/api/customers/{id}")
-    public ResponseEntity updateExistingCustomer(@PathVariable String id,
+    public ResponseEntity updateExistingCustomer(@PathVariable long id,
                                                  @RequestBody Customer customer) {
         // check if customer ids in the path and request body match
-        if (!String.valueOf(customer.getCustomerId()).equals(id)) {
+        if (id != customer.getCustomerId()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     "Customer was not updated successfully.");
         }

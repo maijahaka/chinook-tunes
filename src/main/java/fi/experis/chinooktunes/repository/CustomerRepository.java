@@ -147,13 +147,14 @@ public class CustomerRepository {
                             "Phone, Email, SUM(Total) AS TotalSpending " +
                             "FROM customers LEFT JOIN invoices " +
                             "ON customers.CustomerId = invoices.CustomerId " +
-                            "GROUP BY customers.CustomerId ORDER BY TotalSpending DESC");
+                            "GROUP BY customers.CustomerId " +
+                            "ORDER BY TotalSpending DESC, customers.CustomerId");
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 highestSpendingCustomers.add(
                         new CustomerWithSpendingInformation(
-                                resultSet.getInt("CustomerId"),
+                                resultSet.getLong("CustomerId"),
                                 resultSet.getString("FirstName"),
                                 resultSet.getString("LastName"),
                                 resultSet.getString("Country"),
@@ -176,6 +177,49 @@ public class CustomerRepository {
         }
 
         return highestSpendingCustomers;
+    }
+
+    // returns the most popular genre or a customer (or genres if several are equally popular)
+    public ArrayList<String> getMostPopularGenresOfACustomer(long customerId) {
+        ArrayList<String> mostPopularGenres = new ArrayList<>();
+
+        try {
+            conn = DriverManager.getConnection(URL);
+            logger.log("Connection to SQLite has been established.");
+
+            PreparedStatement preparedStatement = conn.prepareStatement(
+                    "WITH CountTracksPerGenreQuery AS (" +
+                            "SELECT SUM(ii.Quantity) AS TotalTracksPerGenre, g.Name AS GenreName " +
+                            "FROM customers c " +
+                            "    LEFT JOIN invoices i ON c.CustomerId = i.CustomerId " +
+                            "    LEFT JOIN invoice_items ii on i.InvoiceId = ii.InvoiceId " +
+                            "    LEFT JOIN tracks t on ii.TrackId = t.TrackId " +
+                            "    LEFT JOIN genres g on t.GenreId = g.GenreId " +
+                            "WHERE c.CustomerId = ? GROUP BY g.GenreId) " +
+                            "SELECT GenreName FROM  CountTracksPerGenreQuery " +
+                            "WHERE TotalTracksPerGenre = " +
+                            "   (SELECT MAX(TotalTracksPerGenre) FROM CountTracksPerGenreQuery) " +
+                            "ORDER BY GenreName");
+            preparedStatement.setLong(1, customerId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                mostPopularGenres.add(resultSet.getString("GenreName"));
+            }
+
+            logger.log("The requested information was retrieved successfully.");
+        } catch (SQLException e) {
+            logger.log(e.getMessage());
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                logger.log(e.getMessage());
+            }
+        }
+
+        return mostPopularGenres;
     }
 
     public Customer addCustomer(Customer customer) {
