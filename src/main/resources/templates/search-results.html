@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/layout :: head(title='Search Results')">
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <div th:replace="fragments/layout :: header">
+            Header
+        </div>
+
+        <div th:replace="fragments/layout :: search-form"></div>
+
+        <div class="text-center"><a th:href="@{/}" class="text-secondary">Return to home page</a></div>
+
+        <div class="container pt-4">
+            <h2 th:text="'Search results for &quot;' + ${searchTerm} + '&quot;'" class="text-center"></h2>
+
+            <table class="table table-hover">
+                <thead class="table-info">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Album</th>
+                    <th scope="col">Artist</th>
+                    <th scope="col">Genre</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="song:${searchResults}">
+                        <td th:text="${song.name}">Name</td>
+                        <td th:text="${song.album}">Album</td>
+                        <td th:text="${song.artist}">Artist</td>
+                        <td th:text="${song.genre}">Genre</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
