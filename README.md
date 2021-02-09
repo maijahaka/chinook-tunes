@@ -2,11 +2,23 @@
 
 App on Heroku: https://chinook-tunes.herokuapp.com/
 
+This application offers several API endpoints and two views created with Thymeleaf.
+
+The application uses the Chinook sample database with SQLite:
+https://github.com/lerocha/chinook-database
+
+
 ## Pages
 
 ### Home page
 
-The home page contains lists of randomly picked artists, songs and genres from the database.
+The home page contains a search bar for searching songs by name. There are also lists of randomly picked artists, songs and genres from the database.
+
+### Search results page
+
+The search results show the name, album, artist and genre of the songs whose names contain the given search criterion. The search is case insensitive.
+
+If the search criterion is empty, no search will be performed and an error message will be shown.
 
 ## API endpoints
 
